@@ -1,0 +1,99 @@
+<main class="workspace-shell">
+  <header class="topbar">
+    <div class="brand-lockup">
+      <div class="brand-mark" aria-hidden="true">P</div>
+      <div>
+        <p class="eyebrow">Research intelligence</p>
+        <h1>Papertrail</h1>
+      </div>
+    </div>
+    <div class="status-pill" [class.offline]="apiOnline() === false">
+      <span class="status-dot"></span>
+      {{ apiOnline() === false ? 'API offline' : apiOnline() === true ? 'Ollama connected' : 'Connecting' }}
+    </div>
+  </header>
+
+  <section class="workspace-grid">
+    <aside class="history-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Your workspace</p>
+          <h2>Recent threads</h2>
+        </div>
+        <button class="icon-button" type="button" title="Refresh history" aria-label="Refresh history" (click)="loadHistory()">↻</button>
+      </div>
+
+      <label class="field-label" for="conversation">Conversation ID</label>
+      <input id="conversation" class="text-input compact" [ngModel]="conversationId()" (ngModelChange)="conversationId.set($event)" (change)="loadHistory()" />
+
+      <div class="history-list">
+        @if (isLoadingHistory()) {
+          <p class="muted">Loading history...</p>
+        } @else if (history().length === 0) {
+          <div class="empty-history">
+            <span class="empty-icon">○</span>
+            <p>No saved questions yet.</p>
+            <small>Your completed research prompts will appear here.</small>
+          </div>
+        } @else {
+          @for (item of history(); track item.requestId) {
+            <button class="history-item" type="button" (click)="useHistory(item)">
+              <span class="history-question">{{ item.prompt }}</span>
+              <span class="history-date">{{ item.createdAt | date:'MMM d, h:mm a' }}</span>
+            </button>
+          }
+        }
+      </div>
+
+      <div class="source-note">
+        <span class="source-icon">✦</span>
+        <div>
+          <strong>Five papers, one place</strong>
+          <p>Ask grounded questions across your research set.</p>
+        </div>
+      </div>
+    </aside>
+
+    <section class="chat-panel">
+      <div class="chat-intro">
+        <p class="eyebrow">Retrieval-augmented assistant</p>
+        <h2>Make sense of the literature.</h2>
+        <p class="intro-copy">Ask a focused question. The local model will answer from the passages you provide.</p>
+      </div>
+
+      @if (answer(); as response) {
+        <article class="answer-card">
+          <div class="answer-meta"><span class="answer-label">Assistant response</span><span>{{ response.status }}</span></div>
+          <p>{{ response.answer }}</p>
+          <small>{{ response.generatedAt | date:'MMM d, y, h:mm a' }}</small>
+        </article>
+      } @else {
+        <div class="prompt-placeholder">
+          <span class="quote-mark">“</span>
+          <p>Your answer will appear here, grounded in the context supplied below.</p>
+        </div>
+      }
+
+      @if (error()) {
+        <div class="error-banner" role="alert">{{ error() }}</div>
+      }
+
+      <form class="composer" (ngSubmit)="submit()">
+        <label class="field-label" for="prompt">Research question</label>
+        <textarea id="prompt" name="prompt" rows="3" [ngModel]="prompt()" (ngModelChange)="prompt.set($event)" placeholder="e.g. How does self-attention differ from recurrence?" required maxlength="4000"></textarea>
+        <div class="composer-footer">
+          <span class="character-count">{{ prompt().length }} / 4000</span>
+          <button class="send-button" type="submit" [disabled]="isLoading() || !prompt().trim()">
+            {{ isLoading() ? 'Thinking...' : 'Ask assistant' }}
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </form>
+
+      <details class="context-drawer">
+        <summary><span>＋</span> Add retrieved context <small>Optional</small></summary>
+        <textarea aria-label="Retrieved context" rows="4" [ngModel]="context()" (ngModelChange)="context.set($event)" maxlength="12000" placeholder="Paste relevant passages here for grounded answers..."></textarea>
+      </details>
+    </section>
+  </section>
+</main>

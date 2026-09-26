@@ -1,0 +1,74 @@
+XLNet: Generalized Autoregressive Pretraining for Language Understanding
+
+Abstract:
+With the capability of modeling bidirectional context, denoising autoencoder-based pretraining like BERT
+achieves better performance compared to previous autoregressive language modeling. However, BERT relies on
+corrupting the input with masks, which is not realistic. In this paper, we propose XLNet, an autoregressive
+pretraining method that leverages permutation language modeling to capture bidirectional context without
+corrupting the input. XLNet also integrates ideas from Transformer-XL, which provides relative positional
+bias and segment recurrence for handling longer texts.
+
+Introduction:
+Current pretraining methods can be categorized into two groups: autoregressive (AR) and autoencoder
+(AE) methods. Autoregressive language models like GPT compute the probability of a text sequence as the
+product of conditional probabilities of next tokens. This allows for natural language generation but suffers
+from unidirectional context.
+
+Denoising autoencoder methods like BERT mask out random tokens and recover them. This allows
+bidirectional context modeling but introduces a discrepancy between pretraining and downstream fine-tuning
+since corruption is not present during fine-tuning.
+
+Permutation Language Modeling:
+The key innovation of XLNet is permutation language modeling (PLM). Instead of predicting tokens in
+sequential order, XLNet samples random orderings (permutations) of the input tokens and predicts tokens
+based on the permuted orders.
+
+Specifically, given a sequence x = (x1, x2, ..., xn), XLNet samples a permutation z of [1, 2, ..., n] and
+maximizes the likelihood of predicting xzt given its preceding elements xz1, ..., xz(t-1) according to z.
+
+This enables bidirectional context without explicit corruption. For example, when predicting x1 under
+permutation [2, 1, 3], we use context from x2 and x3, which are to the right of x1 in the original sequence.
+
+Two-Stream Self-Attention:
+To efficiently implement permutation language modeling, XLNet introduces two-stream self-attention:
+1. Content stream: Aggregates previous context tokens
+2. Query stream: Aggregates previous context tokens except the current position
+
+This allows computing all possible permutations' outputs in a single forward pass.
+
+Transformer-XL Components:
+XLNet incorporates key ideas from Transformer-XL:
+1. Relative positional bias: Uses relative positions instead of absolute positions
+2. Segment recurrence: Caches previous segments and reuses them during training
+
+These components help XLNet handle longer text sequences more effectively.
+
+Architectural Details:
+XLNet uses a Transformer architecture with 24 layers, 1024 hidden dimensions, and 4096 dimensions in
+feed-forward layers. The model is trained on a diverse corpus including Wikipedia, Books, and Common Crawl.
+
+Advantages Over BERT:
+1. No input corruption needed - more realistic pretraining
+2. Captures bidirectional context through permutation
+3. Autoregressive formulation enables natural language generation
+4. Better modeling of longer sequences with Transformer-XL components
+
+Results:
+XLNet achieves state-of-the-art results across multiple NLP tasks:
+- GLUE: 89.0% average accuracy (vs BERT's 80.4%)
+- SQuAD 2.0: 89.9% F1 score
+- SuperGLUE: 89.9% average score
+- Question answering and semantic similarity improvements
+
+The model particularly excels on tasks requiring understanding of long-range dependencies.
+
+Comparison with BERT:
+While BERT uses masked language modeling with corrupted input, XLNet's permutation language modeling
+achieves bidirectional context without corruption. This makes XLNet's pretraining objective more similar to
+the downstream tasks, potentially leading to better transfer.
+
+Conclusion:
+XLNet demonstrates that permutation language modeling is an effective approach for capturing bidirectional
+context in autoregressive models without input corruption. Combined with Transformer-XL innovations, XLNet
+achieves strong performance on diverse NLP tasks and serves as a powerful pretraining method for language
+understanding and generation.

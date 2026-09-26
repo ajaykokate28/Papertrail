@@ -1,0 +1,15 @@
+### Health
+GET http://localhost:5000/health
+
+### Generate a grounded answer
+POST http://localhost:5000/api/ai/generate
+Content-Type: application/json
+
+{
+  "prompt": "What is self-attention?",
+  "conversationId": "demo",
+  "context": "Retrieved passages from the indexed research papers go here."
+}
+
+### Read saved history
+GET http://localhost:5000/api/ai/history?conversationId=demo&limit=20

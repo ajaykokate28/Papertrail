@@ -1,0 +1,65 @@
+Improving Language Understanding by Generative Pre-Training (GPT)
+
+Abstract:
+Natural language understanding comprises a wide range of diverse tasks such as textual entailment,
+question answering, semantic similarity assessment, and document classification. Although large unlabeled
+text corpora are abundant, labeled data for learning these specific tasks is scarce, making it challenging for
+discriminatively trained models to perform adequately. We demonstrate that large gains on these tasks can be
+realized by generative pre-training of a language model on a diverse corpus of unlabeled text, followed by
+discriminative fine-tuning on each specific task.
+
+Framework:
+Our approach comprises two stages. First, we learn high-quality language representations from raw text
+using a language modeling objective. Second, we adapt these learned representations to a target task.
+
+Pre-training Objective:
+The pre-training objective is the standard language modeling objective: predict the next token given the
+previous tokens. Specifically, given a sequence of tokens (u1, u2, ..., un), we maximize:
+
+L = Σ log P(ui | ui-k, ..., ui-1; Θ)
+
+where k is the context window size and Θ represents the parameters of the model.
+
+We use a left-to-right Transformer architecture with 12 layers, 768 hidden dimensions, and 3072 dimensions
+for feed-forward networks. The model is pre-trained on the BookCorpus dataset which contains 7000 unique
+books with over 100K words each.
+
+Transfer Learning Setup:
+For each downstream task, we adapt the pre-trained model by adding task-specific input transformations
+and output layers. The task-specific parameters are initialized randomly and learned during fine-tuning.
+
+Common task adaptations include:
+1. Classification: Use the final [CLS] token representation
+2. Textual Entailment: Concatenate premise and hypothesis with delimiter token
+3. Semantic Similarity: Use representations of both sentences
+4. Multiple Choice: Use representations with each choice candidate
+
+Fine-tuning Details:
+Fine-tuning involves training the model on downstream task data with the same objective as pre-training,
+plus a task-specific objective. We use a linear layer on top of the pre-trained model output, trained end-to-end.
+
+Pre-training provides much better initialization than random initialization, leading to faster convergence
+and better final performance on downstream tasks.
+
+Results:
+On the GLUE benchmark consisting of 9 diverse NLU tasks, GPT achieves 72.8% average accuracy, beating
+the previous single-model state-of-the-art 70.9%. Improvements are shown across all tasks:
+- CoLA: 91.3%
+- SST-2: 91.3%
+- MRPC: 82.3%
+- QQP: 88.5%
+- And several others
+
+The model also shows strong performance on question answering and semantic similarity tasks.
+
+Key Insights:
+1. Pre-training on diverse unlabeled text provides powerful linguistic representations
+2. Unidirectional language modeling is effective for transfer learning
+3. Simple task adaptation works well when starting from pre-trained representations
+4. Larger pre-trained models transfer better to diverse downstream tasks
+
+Conclusion:
+We have demonstrated that generative pre-training of language models can provide effective
+representations for transfer learning in NLP. The pre-trained GPT model achieves strong results across
+a broad range of downstream tasks with minimal task-specific modifications. This approach paves the way
+for more general and versatile NLP systems.

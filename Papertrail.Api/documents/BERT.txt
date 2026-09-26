@@ -1,0 +1,72 @@
+BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding
+
+Abstract:
+We introduce BERT, a new method of pre-training language representations. Unlike recent language
+representation models, BERT is designed to pre-train deep bidirectional representations from unlabeled text
+by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT
+model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide
+range of tasks, such as question answering and language inference, without substantial task-specific
+architecture modifications.
+
+Introduction:
+Language model pre-training has been shown to be effective for improving many natural language processing
+tasks. These include sentence classification tasks, and token-level tasks such as named entity recognition and
+question answering. There are two existing strategies for applying pre-trained language representations to
+downstream tasks: feature-based and fine-tuning based.
+
+The feature-based approach, such as ELMo, uses task-specific architectures that include the pre-trained
+representations as additional features. The fine-tuning approach, such as the Generative Pre-trained
+Transformer (OpenAI GPT), introduces minimal task-specific parameters, and is trained on downstream
+tasks by simply fine-tuning all pre-trained parameters.
+
+Bidirectional Training:
+A critical limitation of standard language models is that they are unidirectional, and this limits the choice of
+architectures that can be used during pre-training. For example, in OpenAI GPT, the authors use a
+left-to-right architecture, where every token can only attend to previous tokens in the self-attention layers.
+
+In contrast, BERT uses a masked language model (MLM) pre-training objective that enables the pre-training
+of bidirectional representations. The MLM randomly masks some of the tokens from the input, and the
+objective is to predict the original vocabulary id of the masked word based only on its context.
+
+Masked Language Modeling (MLM):
+The masked language modeling task is inspired by the Cloze task in which the reader predicts masked words
+based on context. We randomly select 15% of the tokens in each sequence. For the tokens that were selected,
+we perform the following procedure:
+1. With 80% probability, replace the token with [MASK]
+2. With 10% probability, replace the token with a random token
+3. With 10% probability, keep the token unchanged
+
+The final hidden vectors corresponding to the mask tokens are fed into an output softmax over the vocabulary.
+
+Next Sentence Prediction (NSP):
+Many important downstream tasks such as Question Answering (QA) and Natural Language Inference (NLI)
+are based on understanding the relationship between two sentences. The NSP task is modeled as a binary
+classification task. When choosing the sentences A and B for each pre-training example, 50% of the time B is
+the actual next sentence that follows A, and 50% of the time it is a random sentence from the corpus.
+
+The NSP task is important because sentence relationships are not directly captured by language modeling.
+However, the implications of this task are still being studied and debated by the community.
+
+Representation and Embedding:
+BERT uses learned token embeddings with a special [CLS] token at the beginning of every input sequence.
+The final hidden state corresponding to this token is used as the aggregate representation of the entire
+sequence for classification tasks.
+
+For each token, its input representation is constructed by summing the corresponding token, segment, and
+position embeddings. Segment embeddings distinguish between sentence A and sentence B.
+
+Fine-tuning:
+To use BERT for a downstream task, we simply plug in the task-specific inputs and outputs into BERT and
+fine-tune all the parameters end-to-end. The main difference from pre-training is the output layer. At the
+input, sentence A and sentence B from pre-training are analogous to sentence pairs in downstream tasks.
+
+Results:
+BERT achieves state-of-the-art results on a broad set of NLP tasks. On the GLUE benchmark, BERT obtains
+a 80.4% average score, surpassing the previous state of the art by 5.1%. On the SQuAD question answering
+dataset, BERT achieves 93.2% and 95.1% on Exact Match and F1 score, respectively, compared to the
+previous best published results.
+
+Conclusion:
+We have demonstrated that the use of bidirectional pre-training is crucial for producing powerful language
+representations. Unlike Vaswani et al. and Devlin et al., BERT uses a masked language model pre-training
+objective instead of a left-to-right language modeling objective. This is the main contribution of BERT.

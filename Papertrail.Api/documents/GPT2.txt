@@ -1,0 +1,67 @@
+Language Models are Unsupervised Multitask Learners (GPT-2)
+
+Abstract:
+Natural language processing tasks are typically approached with task-specific architectures and datasets.
+We demonstrate that language models begin learning these tasks without any explicit supervision when
+trained on a new dataset of Internet text called WebText. Our largest model, GPT-2, transfers well to most
+tasks and significantly outperforms task-specific architectures. We argue that a language model trained on
+sufficiently large and diverse text will naturally learn to perform a wide range of tasks.
+
+Introduction:
+The ability of language models to learn useful representations and perform well on downstream tasks has
+improved significantly with scale. However, most existing language models are trained on limited domain data
+and evaluated only on specific downstream tasks.
+
+We present evidence that very large language models trained on diverse, large-scale, unlabeled text corpora
+develop broad linguistic knowledge and can be applied to diverse tasks with minimal architectural changes
+and no task-specific fine-tuning.
+
+WebText Dataset:
+We created a large, diverse text dataset called WebText by scraping web pages linked from Reddit. Reddit
+users have already curated interesting and relevant links, so we leverage this as a proxy for importance. We
+collected all outbound links from Reddit posts that received at least 3 karma with text documents extracted.
+The resulting WebText dataset contains text from 45 million web pages, totaling 40 GB of text.
+
+Model Architecture:
+GPT-2 uses the same model architecture as GPT, which is a Transformer with 12 layers, 768 hidden dimensions,
+and 3072 dimensions in the feed-forward layers. The largest model (GPT-2) has 1.5 billion parameters and
+48 layers of Transformers.
+
+Task Learning Without Explicit Supervision:
+We observe that language models, when trained on sufficiently large corpora, naturally learn to perform a
+wide range of downstream tasks without any explicit supervision. This includes:
+
+1. Machine translation - learns to translate text with only monolingual training
+2. Question answering - learns to answer questions despite not being trained on QA datasets
+3. Summarization - learns to summarize articles and passages
+4. Semantic similarity - learns to rank similar documents
+
+Zero-shot Transfer:
+GPT-2 demonstrates strong zero-shot transfer learning performance on various tasks. Unlike fine-tuning
+approaches that require task-specific datasets, GPT-2 can perform tasks by simply conditioning on task
+descriptions in natural language.
+
+For example, for machine translation, we simply prepend "translate to French:" to the English text, and the
+model learns to produce French translations. The model achieves 23.5 BLEU on WMT-14 English-French
+without any training data or task-specific architectures.
+
+Training and Scaling:
+The models were trained using mixed precision, gradient checkpointing, and distributed training across
+multiple GPUs. Larger models were trained for 10 billion tokens of text. The larger the model and more
+diverse the training data, the better the transfer performance.
+
+Results:
+- Question Answering (SQuAD): 66 F1 score (vs 90+ for fine-tuned models)
+- Machine Translation: 23.5 BLEU (WMT-14 En-Fr)
+- Summarization: 20 ROUGE (vs 34 for fine-tuned models)
+- Natural Language Inference: 55% accuracy
+
+Implications:
+The success of GPT-2 suggests that the scale of language models and the diversity of training data are more
+important factors for language understanding than task-specific architectural innovations. This challenges
+the conventional wisdom that different tasks require different model architectures.
+
+Conclusion:
+We have shown that large language models trained on diverse internet text learn general linguistic knowledge
+that transfers to many downstream tasks without any explicit supervision. This suggests that large-scale
+language modeling should be considered as a potential component of various NLP systems.

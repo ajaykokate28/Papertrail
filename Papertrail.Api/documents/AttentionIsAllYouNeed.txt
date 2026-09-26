@@ -1,0 +1,74 @@
+Attention Is All You Need - Transformer Architecture
+
+Abstract:
+The dominant sequence transduction models are based on complex recurrent or convolutional neural networks
+in an encoder-decoder configuration. The best performing models also connect the encoder and decoder
+through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely
+on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine
+translation tasks show these models to be superior in quality while being more parallelizable and requiring
+significantly less time to train.
+
+Introduction:
+Recurrent neural networks, long short-term memory and gated recurrent units in particular, have been firmly
+established as state of the art approaches in sequence modeling and transduction problems such as language
+modeling and machine translation. Numerous efforts have since continued to push the boundaries of recurrent
+language models and encoder-decoder architectures.
+
+Recurrent models typically factor computation along the symbol positions of the input and output sequences.
+Aligning the positions to steps in computation time, they generate a sequence of hidden states ht, as a
+function of the previous hidden state ht−1 and the input for position t. This inherently sequential nature
+precludes parallelization within training examples, which becomes critical at longer sequence lengths, as
+memory constraints limit batching across examples.
+
+Model Architecture:
+The Transformer follows an encoder-decoder structure using stacked self-attention and point-wise, fully
+connected layers. The encoder maps an input sequence of symbol representations to a sequence of continuous
+representations. Given z, the decoder then generates an output sequence of symbols one element at a time.
+
+Multi-Head Attention:
+Instead of performing a single attention function with dmodel-dimensional keys, values and queries, we found
+it beneficial to linearly project the queries, keys and values h times with different, learned linear projections
+to dk, dk and dv dimensions, respectively. On each of these projected versions of queries, keys and values we
+then perform the attention function in parallel, yielding dv-dimensional output values.
+
+Multi-head attention allows the model to attend to information from different representation subspaces at
+different positions. With a single attention head, averaging inhibits this.
+
+Scaled Dot-Product Attention:
+We call our particular attention mechanism "Scaled Dot-Product Attention". The input consists of queries and
+keys of dimension dk, and values of dimension dv. We compute the dot products of the query with all keys,
+divide each by √dk, and apply a softmax function to obtain the weights on the values.
+
+In practice, we compute the attention function on a set of queries simultaneously, packed together into a
+matrix Q. The keys and values are also packed together into matrices K and V. We compute the matrix of
+outputs as: Attention(Q, K, V) = softmax(QK^T/√dk)V
+
+Positional Encoding:
+Since our model contains no recurrence and no convolution, in order for the model to make use of the order
+of the sequence, we must inject some information about the relative or absolute position of the tokens in
+the sequence. To this end, we add "positional encodings" to the embeddings at the bottoms of the encoder
+and decoder stacks.
+
+The positional encodings have the same dimension dmodel as the embeddings, so the two can be summed. We
+use sine and cosine functions of different frequencies: PE(pos,2i) = sin(pos/10000^(2i/dmodel))
+PE(pos,2i+1) = cos(pos/10000^(2i/dmodel))
+
+Advantages over Recurrent Models:
+The Transformer has several advantages over sequence-to-sequence models based on recurrent layers:
+1. The total computational complexity per layer is reduced.
+2. The amount of computation that can be parallelized is increased.
+3. The path length between forward and backward signals in the network is reduced.
+
+Training and Results:
+We trained on the standard WMT 2014 English-German dataset. The dataset consists of about 4.5 million
+sentence pairs. Sentences were encoded using byte-pair encoding, which shares vocabulary between source
+and target languages. The Transformer outperforms the best previously reported models on this dataset.
+
+On WMT 2014 English-French, our single model achieves a BLEU score of 41.0, surpassing all of the
+previously published single models, at less than 1/4 the training cost of the previous state-of-the-art model.
+
+Conclusion:
+In this work, we presented the Transformer, a new simple network architecture based on attention
+mechanisms. We showed that the Transformer can be trained significantly faster than architectures based
+on recurrent or convolutional layers. We achieved new state of the art on English to German and English to
+French translation tasks.
