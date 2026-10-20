@@ -1,0 +1,13 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# Visual Studio per-user files
+.vs/
+*.suo
+*.user
+
+# Local SQLite database and journal files
+/Papertrail.Api/papertrail.db
+/Papertrail.Api/papertrail.db-shm
+/Papertrail.Api/papertrail.db-wal

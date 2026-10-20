@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Papertrail.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c41100b04c40301a9b719caa72968bb3c64db419")]
 [assembly: System.Reflection.AssemblyProductAttribute("Papertrail.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Papertrail.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
